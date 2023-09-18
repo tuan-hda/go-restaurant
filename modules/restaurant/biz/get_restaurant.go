@@ -5,7 +5,7 @@ import (
 	restaurantmodel "g07/modules/restaurant/model"
 )
 
-type GetRestaurantBiz interface {
+type GetRestaurantStore interface {
 	FindDataWithCondition(
 		ctx context.Context,
 		cond map[string]interface{},
@@ -14,10 +14,10 @@ type GetRestaurantBiz interface {
 }
 
 type getRestaurantBiz struct {
-	store GetRestaurantBiz
+	store GetRestaurantStore
 }
 
-func NewGetRestaurantBiz(store GetRestaurantBiz) *getRestaurantBiz {
+func NewGetRestaurantBiz(store GetRestaurantStore) *getRestaurantBiz {
 	return &getRestaurantBiz{store: store}
 }
 

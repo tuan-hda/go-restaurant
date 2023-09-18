@@ -1,6 +1,9 @@
 package restaurantmodel
 
-import "g07/common"
+import (
+	"errors"
+	"g07/common"
+)
 
 type Restaurant struct {
 	common.SQLModel
@@ -9,3 +12,8 @@ type Restaurant struct {
 }
 
 func (Restaurant) TableName() string { return "restaurants" }
+
+var (
+	ErrNameCannotBeBlank    = errors.New("name cannot be blank")
+	ErrAddressCannotBeBlank = errors.New("address cannot be blank")
+)

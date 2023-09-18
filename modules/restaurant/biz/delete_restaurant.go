@@ -7,7 +7,7 @@ import (
 	restaurantmodel "g07/modules/restaurant/model"
 )
 
-type UpdateRestaurantStore interface {
+type DeleteRestaurantStore interface {
 	FindDataWithCondition(
 		ctx context.Context,
 		cond map[string]interface{},
@@ -22,19 +22,15 @@ type UpdateRestaurantStore interface {
 	) error
 }
 
-type updateRestaurantBiz struct {
-	store UpdateRestaurantStore
+type deleteRestaurantBiz struct {
+	store DeleteRestaurantStore
 }
 
-func NewUpdateRestaurantBiz(store UpdateRestaurantStore) *updateRestaurantBiz {
-	return &updateRestaurantBiz{store: store}
+func NewDeleteRestaurantBiz(store DeleteRestaurantStore) *deleteRestaurantBiz {
+	return &deleteRestaurantBiz{store: store}
 }
 
-func (biz *updateRestaurantBiz) UpdateRestaurant(ctx context.Context, id int, data *restaurantmodel.RestaurantUpdate) error {
-	if err := data.Validate(); err != nil {
-		return err
-	}
-
+func (biz *deleteRestaurantBiz) DeleteRestaurant(ctx context.Context, id int) error {
 	oldData, err := biz.store.FindDataWithCondition(ctx, map[string]interface{}{"id": id})
 
 	if err != nil {
@@ -49,9 +45,13 @@ func (biz *updateRestaurantBiz) UpdateRestaurant(ctx context.Context, id int, da
 		return errors.New("data has been deleted")
 	}
 
-	err = biz.store.Update(ctx, map[string]interface{}{"id": id}, data)
+	zero := 0
 
-	if err != nil {
+	if err := biz.store.Update(
+		ctx,
+		map[string]interface{}{"id": id},
+		&restaurantmodel.RestaurantUpdate{Status: &zero},
+	); err != nil {
 		return err
 	}
 

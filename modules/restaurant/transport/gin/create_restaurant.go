@@ -1,15 +1,15 @@
 package restaurantgin
 
 import (
+	"g07/component/appctx"
 	restaurantbiz "g07/modules/restaurant/biz"
 	restaurantmodel "g07/modules/restaurant/model"
 	restaurantstorage "g07/modules/restaurant/storage"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
 	"net/http"
 )
 
-func CreateRestaurant(db *gorm.DB) func(c *gin.Context) {
+func CreateRestaurant(appCtx appctx.AppContext) func(c *gin.Context) {
 	return func(c *gin.Context) {
 		var newData restaurantmodel.RestaurantCreate
 
@@ -19,7 +19,7 @@ func CreateRestaurant(db *gorm.DB) func(c *gin.Context) {
 		}
 
 		// Dependencies install
-		store := restaurantstorage.NewSQLStore(db)
+		store := restaurantstorage.NewSQLStore(appCtx.GetMainDBConnection())
 		biz := restaurantbiz.NewCreateRestaurantBiz(store)
 
 		if err := biz.CreateNewRestaurant(c.Request.Context(), &newData); err != nil {
